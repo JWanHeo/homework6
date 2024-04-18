@@ -10,11 +10,11 @@
 
 #define MAX_QUEUE_SIZE 4
 
-typedef char element; // charí˜• element íƒ€ì… ì •ì˜
+typedef char element; // charÇü element Å¸ÀÔ Á¤ÀÇ
 typedef struct {
 	element queue[MAX_QUEUE_SIZE];
 	int front, rear;
-}QueueType; // element íƒ€ì…ì˜ ì‚¬ì´ì¦ˆê°€ 4ì¸ ë°°ì—´ queueì™€ intí˜• frontì™€ rearë¥¼ ë©¤ë²„ë³€ìˆ˜ë¡œ ê°€ì§€ëŠ” êµ¬ì¡°ì²´ QueueType ì •ì˜
+}QueueType; // element Å¸ÀÔÀÇ »çÀÌÁî°¡ 4ÀÎ ¹è¿­ queue¿Í intÇü front¿Í rear¸¦ ¸â¹öº¯¼ö·Î °¡Áö´Â ±¸Á¶Ã¼ QueueType Á¤ÀÇ
 
 
 QueueType *createQueue();
@@ -22,7 +22,7 @@ int freeQueue(QueueType *cQ);
 int isEmpty(QueueType *cQ);
 int isFull(QueueType *cQ);
 void enQueue(QueueType *cQ, element item);
-void deQueue(QueueType *cQ, element* item);
+void deQueue(QueueType *cQ, element *item);
 void printQ(QueueType *cQ);
 void debugQ(QueueType *cQ);
 element getElement();
@@ -71,91 +71,117 @@ int main(void)
 	return 1;
 }
 
-QueueType *createQueue() // ë°˜í™˜í˜•ì´ QueueType í¬ì¸í„°ì¸ createQueue í•¨ìˆ˜ ì •ì˜
+QueueType *createQueue() // ¹İÈ¯ÇüÀÌ QueueType Æ÷ÀÎÅÍÀÎ createQueue ÇÔ¼ö Á¤ÀÇ
 {
-	QueueType *cQ; // QueueType í¬ì¸í„° cQ ì„ ì–¸
-	cQ = (QueueType *)malloc(sizeof(QueueType)); // cQì— QueueTypeì˜ ì‚¬ì´ì¦ˆ(16byte)ë§Œí¼ì˜ ë©”ëª¨ë¦¬ë¥¼ ë™ì  í• ë‹¹
-	cQ->front = 0; // cQì˜ front ê°’ì„ 0ìœ¼ë¡œ ì´ˆê¸°í™”
-	cQ->rear = 0; // cQì˜ rear ê°’ì„ 0ìœ¼ë¡œ ì´ˆê¸°í™”
-	return cQ; // cQ ë°˜í™˜
+	QueueType *cQ; // QueueType Æ÷ÀÎÅÍ cQ ¼±¾ğ
+	cQ = (QueueType *)malloc(sizeof(QueueType)); // cQ¿¡ QueueTypeÀÇ »çÀÌÁî(16byte)¸¸Å­ÀÇ ¸Ş¸ğ¸®¸¦ µ¿Àû ÇÒ´ç
+	cQ->front = 0; // cQÀÇ front °ªÀ» 0À¸·Î ÃÊ±âÈ­
+	cQ->rear = 0; // cQÀÇ rear °ªÀ» 0À¸·Î ÃÊ±âÈ­
+	return cQ; // cQ ¹İÈ¯
 }
 
-int freeQueue(QueueType *cQ) // ë°˜í™˜í˜•ì´ intì´ê³ , QueueType í¬ì¸í„° cQë¥¼ ë§¤ê°œë³€ìˆ˜ë¡œ ë°›ëŠ” freeQueueí•¨ìˆ˜ ì •ì˜
+int freeQueue(QueueType *cQ) // ¹İÈ¯ÇüÀÌ intÀÌ°í, QueueType Æ÷ÀÎÅÍ cQ¸¦ ¸Å°³º¯¼ö·Î ¹Ş´Â freeQueueÇÔ¼ö Á¤ÀÇ
 {
-    if(cQ == NULL) return 1; // cQ null pointerì´ë©´ 1 ë°˜í™˜í•˜ë©° í•¨ìˆ˜ ì¢…ë£Œ
-    free(cQ); // cQì— í• ë‹¹ëœ ë©”ëª¨ë¦¬ í•´ì œ
-    return 1; // 1 ë°˜í™˜
+    if(cQ == NULL) return 1; // cQ null pointerÀÌ¸é 1 ¹İÈ¯ÇÏ¸ç ÇÔ¼ö Á¾·á
+    free(cQ); // cQ¿¡ ÇÒ´çµÈ ¸Ş¸ğ¸® ÇØÁ¦
+    return 1; // 1 ¹İÈ¯
 }
 
-element getElement()
+element getElement() // ¹İÈ¯ÇüÀÌ elementÀÌ°í, ¸Å°³º¯¼ö°¡ ¾ø´Â getElementÇÔ¼ö Á¤ÀÇ
 {
-	element item; // element íƒ€ì…ì˜ item ë³€ìˆ˜ ì„ ì–¸
+	element item; // element Å¸ÀÔÀÇ item º¯¼ö ¼±¾ğ
 	printf("Input element = "); 
-	scanf(" %c", &item); // item ì…ë ¥
-	return item; // item ë°˜í™˜
+	scanf(" %c", &item); // item ÀÔ·Â
+	return item; // item ¹İÈ¯
 }
 
 
 /* complete the function */
-int isEmpty(QueueType *cQ)
+int isEmpty(QueueType *cQ) // ¹İÈ¯ÇüÀÌ intÀÌ°í, QueueType Æ÷ÀÎÅÍ cQ¸¦ ¸Å°³º¯¼ö·Î ¹Ş´Â isEmptyÇÔ¼ö Á¤ÀÇ
 {
+	if(cQ->front == cQ->rear) return 0; // cQÀÇ front¿Í rear°¡ °°Àº ÀÎµ¦½º¸¦ °¡¸®Å°¸é 0 ¹İÈ¯
 
-    return 0;
+  return 1; // ¾Æ´Ï¸é 1 ¹İÈ¯
 }
 
 /* complete the function */
-int isFull(QueueType *cQ)
+int isFull(QueueType *cQ) // ¹İÈ¯ÇüÀÌ intÀÌ°í, QueueType Æ÷ÀÎÅÍ cQ¸¦ ¸Å°³º¯¼ö·Î ¹Ş´Â isFullÇÔ¼ö Á¤ÀÇ
 {
-   return 0;
+	int nextRear;
+	if(cQ->rear == MAX_QUEUE_SIZE - 1) {
+		nextRear = 0;
+	} else {
+		nextRear = cQ->rear + 1;
+	}
+	if(nextRear == cQ->front) return 0; // cQÀÇ front¿Í rearÀÇ Â÷°¡ 1ÀÌ¸é 0 ¹İÈ¯
+
+	return 1; // ¾Æ´Ï¸é 1 ¹İÈ¯
 }
 
 
 /* complete the function */
-void enQueue(QueueType *cQ, element item)
+void enQueue(QueueType *cQ, element item) // ¹İÈ¯ÇüÀÌ voidÀÌ°í, QueueType Æ÷ÀÎÅÍ cQ¿Í element Å¸ÀÔ itemÀ» ¸Å°³º¯¼ö·Î ¹Ş´Â enQueueÇÔ¼ö Á¤ÀÇ
 {
-	return 0;
+	if(isFull(cQ) == 0) { // Å¥°¡ ²Ë Ã¡´ÂÁö °Ë»ç
+		printf("Å¥°¡ ²Ë Ã¡½À´Ï´Ù.");		
+	} else {
+		if(cQ->rear == MAX_QUEUE_SIZE - 1) { // ²Ë Â÷Áö ¾ÊÀº °æ¿ì, rearÀÇ °ªÀÌ MAX_QUEUE_SIZE-1(== 3)ÀÎÁö °Ë»ç
+			cQ->rear = 0; // MAX_QUEUE_SIZEÀÎ °æ¿ì 0À¸·Î ÃÊ±âÈ­
+		} else {
+			cQ->rear++; // ¾Æ´Ñ °æ¿ì rear + 1
+		}
+		cQ->queue[cQ->rear] = item; // rear¿¡ item ÀúÀå
+	}
 }
 
 /* complete the function */
-void deQueue(QueueType *cQ, element *item)
+void deQueue(QueueType *cQ, element *item) // ¹İÈ¯ÇüÀÌ voidÀÌ°í, QueueType Æ÷ÀÎÅÍ cQ¿Í element Æ÷ÀÎÅÍ itemÀ» ¸Å°³º¯¼ö·Î ¹Ş´Â deQueueÇÔ¼ö Á¤ÀÇ
 {
-    return 0;
+	if(isEmpty(cQ) == 0) { // Å¥°¡ ºñ¾îÀÖ´Â Áö °Ë»ç
+		printf("Å¥°¡ ºñ¾îÀÖ½À´Ï´Ù.");
+	} else {
+		if(cQ->front == MAX_QUEUE_SIZE - 1) { // ¾Æ´Ñ °æ¿ì cQÀÇ front°ªÀÌ MAX_QUEUE_SIZE¿Í µ¿ÀÏÇÑ Áö °Ë»ç
+			cQ->front = 0; // µ¿ÀÏÇÑ °æ¿ì front¸¦ 0À¸·Î ÃÊ±âÈ­
+		} else {
+			cQ->front++; // ¾Æ´Ñ °æ¿ì front + 1
+		}
+		item = NULL; // itemÀ» NULL pointer·Î ¹Ù²Ù±â
+	}
 }
 
 
-void printQ(QueueType *cQ)
+void printQ(QueueType *cQ) // ¹İÈ¯ÇüÀÌ voidÀÌ°í, QueueType Æ÷ÀÎÅÍ cQ¸¦ ¸Å°³º¯¼ö·Î ¹Ş´Â printQÇÔ¼ö Á¤ÀÇ
 {
-	int i, first, last;
+	int i, first, last; // intÇü º¯¼ö i, first, last º¯¼ö ¼±¾ğ
 
-	first = (cQ->front + 1)%MAX_QUEUE_SIZE;
-	last = (cQ->rear + 1)%MAX_QUEUE_SIZE;
+	first = (cQ->front + 1)%MAX_QUEUE_SIZE; // first¸¦ cQÀÇ front+1À» MAX_QUEUE_SIZE·Î ³ª´« ³ª¸ÓÁö·Î ÃÊ±âÈ­
+	last = (cQ->rear + 1)%MAX_QUEUE_SIZE; // last¸¦ cQÀÇ rear+1À» MAX_QUEUE_SIZE·Î ³ª´« ³ª¸ÓÁö·Î ÃÊ±âÈ­
 
 	printf("Circular Queue : [");
 
-	i = first;
-	while(i != last){
-		printf("%3c", cQ->queue[i]);
-		i = (i+1)%MAX_QUEUE_SIZE;
-
+	i = first; // i¸¦ first·Î ÃÊ±âÈ­
+	while(i != last){ // i¿Í last°¡ µ¿ÀÏÇÏÁö ¾ÊÀº Áö Á¶°Ç °Ë»ç
+		printf("%3c", cQ->queue[i]); // µ¿ÀÏÇÏÁö ¾ÊÀº °æ¿ì cQÀÇ queueÀÇ i¹øÂ° ¿ä¼Ò Ãâ·Â
+		i = (i+1)%MAX_QUEUE_SIZE; // i¸¦ (i+1)¸¦ MAX_QUEUE_SIZE·Î ³ª´« ³ª¸ÓÁö·Î ÃÊ±âÈ­
 	}
 	printf(" ]\n");
 }
 
 
-void debugQ(QueueType *cQ)
+void debugQ(QueueType *cQ) // ¹İÈ¯ÇüÀÌ voidÀÌ°í, QueueType Æ÷ÀÎÅÍ cQ¸¦ ¸Å°³º¯¼ö·Î ¹Ş´Â debugQÇÔ¼ö Á¤ÀÇ
 {
 
 	printf("\n---DEBUG\n");
-	for(int i = 0; i < MAX_QUEUE_SIZE; i++)
+	for(int i = 0; i < MAX_QUEUE_SIZE; i++) // ¹İº¹º¯¼ö iÀÇ ÃÊ±ê°ªÀÌ 0ÀÌ°í, ÃÖ´ë°¡ MAX_QUEUE_SIZE-1ÀÎ ¹İº¹¹®
 	{
-		if(i == cQ->front) {
-			printf("  [%d] = front\n", i);
-			continue;
+		if(i == cQ->front) { // iÀÇ °ªÀÌ cQÀÇ front¿Í µ¿ÀÏÇÑÁö È®ÀÎ
+			printf("  [%d] = front\n", i); // µ¿ÀÏÇÑ °æ¿ì "iÀÇ °ª = front" Ãâ·Â
+			continue; // ´ÙÀ½ ¹İº¹À¸·Î ³Ñ¾î°¡±â
 		}
-		printf("  [%d] = %c\n", i, cQ->queue[i]);
+		printf("  [%d] = %c\n", i, cQ->queue[i]); // iÀÇ °ªÀÌ cQÀÇ front¿Í µ¿ÀÏÇÏÁö ¾ÊÀº °æ¿ì, "[iÀÇ °ª] = cQÀÇ queue[i]ÀÇ °ª" Ãâ·Â
 
 	}
-	printf("front = %d, rear = %d\n", cQ->front, cQ->rear);
+	printf("front = %d, rear = %d\n", cQ->front, cQ->rear); // front¿Í rearÀÇ °ª Ãâ·Â
 }
 
 
