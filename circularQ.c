@@ -33,6 +33,8 @@ int main(void)
 	element data;
 	char command;
 
+	printf("[----- ÇãÁ¦¿Ï 2020069031 -----]\n\n");
+
 	do{
 		printf("\n-----------------------------------------------------\n");
 		printf("                     Circular Q                   \n");
