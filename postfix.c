@@ -12,28 +12,28 @@
 #define MAX_STACK_SIZE 10
 #define MAX_EXPRESSION_SIZE 20
 
-/* stack ë‚´ì—ì„œ ìš°ì„ ìˆœìœ„, lparen = 0 ê°€ì¥ ë‚®ìŒ */
+/* stack ³»¿¡¼­ ¿ì¼±¼øÀ§, lparen = 0 °¡Àå ³·À½ */
 typedef enum{
-	lparen = 0,  /* ( ì™¼ìª½ ê´„í˜¸ */
-	rparen = 9,  /* ) ì˜¤ë¥¸ìª½ ê´„í˜¸*/
-	times = 7,   /* * ê³±ì…ˆ */
-	divide = 6,  /* / ë‚˜ëˆ—ì…ˆ */
-	plus = 5,    /* + ë§ì…ˆ */
-	minus = 4,   /* - ëº„ì…ˆ */
-	operand = 1 /* í”¼ì—°ì‚°ì */
-} precedence;
+	lparen = 0,  /* ( ¿ŞÂÊ °ıÈ£ */
+	rparen = 9,  /* ) ¿À¸¥ÂÊ °ıÈ£*/
+	times = 7,   /* * °ö¼À */
+	divide = 6,  /* / ³ª´°¼À */
+	plus = 5,    /* + µ¡¼À */
+	minus = 4,   /* - »¬¼À */
+	operand = 1 /* ÇÇ¿¬»êÀÚ */
+} precedence; // enum Å¸ÀÔ precedence Á¤ÀÇ
 
-char infixExp[MAX_EXPRESSION_SIZE];   	/* infix expressionì„ ì €ì¥í•˜ëŠ” ë°°ì—´ */
-char postfixExp[MAX_EXPRESSION_SIZE];	/* postfixë¡œ ë³€ê²½ëœ ë¬¸ìì—´ì„ ì €ì¥í•˜ëŠ” ë°°ì—´ */
-char postfixStack[MAX_STACK_SIZE];	/* postfixë¡œ ë³€í™˜ì„ ìœ„í•´ í•„ìš”í•œ ìŠ¤íƒ */
-int evalStack[MAX_STACK_SIZE];		/* ê³„ì‚°ì„ ìœ„í•´ í•„ìš”í•œ ìŠ¤íƒ */
+char infixExp[MAX_EXPRESSION_SIZE];   	/* infix expressionÀ» ÀúÀåÇÏ´Â ¹è¿­ */
+char postfixExp[MAX_EXPRESSION_SIZE];	/* postfix·Î º¯°æµÈ ¹®ÀÚ¿­À» ÀúÀåÇÏ´Â ¹è¿­ */
+char postfixStack[MAX_STACK_SIZE];	/* postfix·Î º¯È¯À» À§ÇØ ÇÊ¿äÇÑ ½ºÅÃ */
+int evalStack[MAX_STACK_SIZE];		/* °è»êÀ» À§ÇØ ÇÊ¿äÇÑ ½ºÅÃ */
 
-int postfixStackTop = -1;  /* postfixStackìš© top */
-int evalStackTop = -1;	   /* evalStackìš© top */
+int postfixStackTop = -1;  /* postfixStack¿ë top */
+int evalStackTop = -1;	   /* evalStack¿ë top */
 
-int evalResult = 0;	   /* ê³„ì‚° ê²°ê³¼ë¥¼ ì €ì¥ */
+int evalResult = 0;	   /* °è»ê °á°ú¸¦ ÀúÀå */
 
-void postfixpush(char x);
+void postfixPush(char x);
 char postfixPop();
 void evalPush(int x);
 int evalPop();
@@ -50,6 +50,8 @@ int main()
 {
 	char command;
 
+	printf("[----- ÇãÁ¦¿Ï 2020069031 -----]\n\n");
+
 	do{
 		printf("----------------------------------------------------------------\n");
 		printf("               Infix to Postfix, then Evaluation               \n");
@@ -61,26 +63,26 @@ int main()
 		scanf(" %c", &command);
 
 		switch(command) {
-		case 'i': case 'I':
-			getInfix();
-			break;
-		case 'p': case 'P':
-			toPostfix();
-			break;
-		case 'e': case 'E':
-			evaluation();
-			break;
-		case 'd': case 'D':
-			debug();
-			break;
-		case 'r': case 'R':
-			reset();
-			break;
-		case 'q': case 'Q':
-			break;
-		default:
-			printf("\n       >>>>>   Concentration!!   <<<<<     \n");
-			break;
+			case 'i': case 'I':
+				getInfix();
+				break;
+			case 'p': case 'P':
+				toPostfix();
+				break;
+			case 'e': case 'E':
+				evaluation();
+				break;
+			case 'd': case 'D':
+				debug();
+				break;
+			case 'r': case 'R':
+				reset();
+				break;
+			case 'q': case 'Q':
+				break;
+			default:
+				printf("\n       >>>>>   Concentration!!   <<<<<     \n");
+				break;
 		}
 
 	}while(command != 'q' && command != 'Q');
@@ -88,104 +90,167 @@ int main()
 	return 1;
 }
 
+/**
+ * ¹®ÀÚ x¸¦ ¸Å°³º¯¼ö·Î ¹Ş¾Æ postStack¿¡ ÀúÀå
+*/
 void postfixPush(char x)
 {
-    postfixStack[++postfixStackTop] = x;
-}
-
-char postfixPop()
-{
-    char x;
-    if(postfixStackTop == -1)
-        return '\0';
-    else {
-    	x = postfixStack[postfixStackTop--];
-    }
-    return x;
-}
-
-void evalPush(int x)
-{
-    evalStack[++evalStackTop] = x;
-}
-
-int evalPop()
-{
-    if(evalStackTop == -1)
-        return -1;
-    else
-        return evalStack[evalStackTop--];
+  postfixStack[++postfixStackTop] = x; // postfixStackTopÀ» 1 Áõ°¡½ÃÅ°°í ±× À§Ä¡¿¡ x ÀúÀå
 }
 
 /**
- * infix expressionì„ ì…ë ¥ë°›ëŠ”ë‹¤.
- * infixExpì—ëŠ” ì…ë ¥ëœ ê°’ì„ ì €ì¥í•œë‹¤.
+ * postfixStackÀÇ ¿ä¼Ò¸¦ pop
+*/
+char postfixPop()
+{
+	char x;
+	if(postfixStackTop == -1) // postfixTopÀÌ -1ÀÎÁö È®ÀÎ(½ºÅÃÀÌ ºñ¾îÀÖ´Â Áö È®ÀÎ)
+		return '\0'; // ºñ¾îÀÖÀ¸¸é '\0' ¹İÈ¯
+	else {
+		x = postfixStack[postfixStackTop--]; // ºñ¾îÀÖÁö ¾ÊÀ¸¸é postfixStackTopÀÌ °¡¸®Å°´Â ¿ä¼Ò·Î x¸¦ ÃÊ±âÈ­ÇÏ°í postfixStackTopÀ» -1 ¸¸Å­ ÀÌµ¿
+	}
+	return x; // x ¹İÈ¯
+}
+
+/**
+ * ¹®ÀÚ x¸¦ ¸Å°³º¯¼ö·Î ¹Ş¾Æ evalStack¿¡ ÀúÀå
+*/
+void evalPush(int x)
+{
+	evalStack[++evalStackTop] = x; // // evalStackTopÀ» 1 Áõ°¡½ÃÅ°°í ±× À§Ä¡¿¡ x ÀúÀå
+}
+
+/**
+ * evalStackÀÇ ¿ä¼Ò¸¦ pop
+*/
+int evalPop()
+{
+	if(evalStackTop == -1) // evalStackTopÀÌ -1ÀÎÁö È®ÀÎ(evalStackÀÌ ºñ¾îÀÖ´Â Áö È®ÀÎ)
+		return -1; // ºñ¾îÀÖÀ¸¸é -1 ¹İÈ¯
+	else
+		return evalStack[evalStackTop--]; // ºñ¾îÀÖÁö ¾ÊÀ¸¸é evalStackTopÀÌ °¡¸®Å°´Â ¿ä¼Ò¸¦ ¹İÈ¯ÇÏ°í evalStackTopÀ» -1 ¸¸Å­ ÀÌµ¿
+}
+
+/**
+ * infix expressionÀ» ÀÔ·Â¹Ş´Â´Ù.
+ * infixExp¿¡´Â ÀÔ·ÂµÈ °ªÀ» ÀúÀåÇÑ´Ù.
  */
 void getInfix()
 {
-    printf("Type the expression >>> ");
-    scanf("%s",infixExp);
+	printf("Type the expression >>> ");
+	scanf("%s",infixExp);
 }
 
+/**
+ * symbol¹®ÀÚ¸¦ ¸Å°³º¯¼ö·Î ¹Ş¾Æ¼­ precedence·Î º¯È¯
+*/
 precedence getToken(char symbol)
 {
 	switch(symbol) {
-	case '(' : return lparen;
-	case ')' : return rparen;
-	case '+' : return plus;
-	case '-' : return minus;
-	case '/' : return divide;
-	case '*' : return times;
-	default : return operand;
+		case '(' : return lparen; // '('ÀÌ¸é lparen ¹İÈ¯
+		case ')' : return rparen; // ')'ÀÌ¸é rparen ¹İÈ¯
+		case '+' : return plus; // '+'ÀÌ¸é plus ¹İÈ¯
+		case '-' : return minus; // '-'ÀÌ¸é minus ¹İÈ¯
+		case '/' : return divide; // '/'ÀÌ¸é devide ¹İÈ¯
+		case '*' : return times; // '*'ÀÌ¸é times ¹İÈ¯
+		default : return operand; // À§ÀÇ ÄÉÀÌ½º¿¡ ÇØ´çÇÏÁö ¾ÊÀ¸¸é operand ¹İÈ¯
 	}
 }
 
+/**
+ * ¹®ÀÚ x¸¦ ¸Å°³º¯¼ö·Î ¹Ş¾Æ xÀÇ ¿ì¼±¼øÀ§ ¹İÈ¯
+*/
 precedence getPriority(char x)
 {
-	return getToken(x);
+	return getToken(x); // getTokenÀ» È£ÃâÇÏ¿© xÀÇ ¿ì¼±¼øÀ§ ¹İÈ¯
 }
 
 /**
- * ë¬¸ìí•˜ë‚˜ë¥¼ ì „ë‹¬ë°›ì•„, postfixExpì— ì¶”ê°€
+ * ¹®ÀÚÇÏ³ª¸¦ Àü´Ş¹Ş¾Æ, postfixExp¿¡ Ãß°¡
  */
 void charCat(char* c)
 {
-	if (postfixExp == '\0')
-		strncpy(postfixExp, c, 1);
+	if (postfixExp == '\0') // postfixExp°¡ '\0'ÀÎÁö °Ë»ç(ºñ¾îÀÖ´Â Áö °Ë»ç)
+		strncpy(postfixExp, c, 1); // '\0'ÀÌ¸é postfixExp¿¡ ¸Å°³º¯¼ö·Î ¹ŞÀº ¹®ÀÚ c¸¦ ÀúÀå
 	else
-		strncat(postfixExp, c, 1);
+		strncat(postfixExp, c, 1); // '\0'ÀÌ ¾Æ´Ï¸é postfixExp µÚ¿¡ c¸¦ ÀÌ¾îºÙÀÌ±â
 }
 
 /**
- * infixExpì˜ ë¬¸ìë¥¼ í•˜ë‚˜ì”© ì½ì–´ê°€ë©´ì„œ stackì„ ì´ìš©í•˜ì—¬ postfixë¡œ ë³€ê²½í•œë‹¤.
- * ë³€ê²½ëœ postfixëŠ” postFixExpì— ì €ì¥ëœë‹¤.
+ * infixExpÀÇ ¹®ÀÚ¸¦ ÇÏ³ª¾¿ ÀĞ¾î°¡¸é¼­ stackÀ» ÀÌ¿ëÇÏ¿© postfix·Î º¯°æÇÑ´Ù.
+ * º¯°æµÈ postfix´Â postFixExp¿¡ ÀúÀåµÈ´Ù.
  */
 void toPostfix()
 {
-	/* infixExpì˜ ë¬¸ì í•˜ë‚˜ì”©ì„ ì½ê¸°ìœ„í•œ í¬ì¸í„° */
+	/* infixExpÀÇ ¹®ÀÚ ÇÏ³ª¾¿À» ÀĞ±âÀ§ÇÑ Æ÷ÀÎÅÍ */
 	char *exp = infixExp;
-	char x; /* ë¬¸ìí•˜ë‚˜ë¥¼ ì„ì‹œë¡œ ì €ì¥í•˜ê¸° ìœ„í•œ ë³€ìˆ˜ */
+	char x; /* ¹®ÀÚÇÏ³ª¸¦ ÀÓ½Ã·Î ÀúÀåÇÏ±â À§ÇÑ º¯¼ö */
 
-	/* expë¥¼ ì¦ê°€ì‹œì¼œê°€ë©´ì„œ, ë¬¸ìë¥¼ ì½ê³  postfixë¡œ ë³€ê²½ */
-	while(*exp != '\0')
-	{
-		/* í•„ìš”í•œ ë¡œì§ ì™„ì„± */
+	/* exp¸¦ Áõ°¡½ÃÄÑ°¡¸é¼­, ¹®ÀÚ¸¦ ÀĞ°í postfix·Î º¯°æ */
+	while(*exp != '\0')	{
+		/* ÇÊ¿äÇÑ ·ÎÁ÷ ¿Ï¼º */
+		if(getToken(*exp) == operand) { // exp°¡ °¡¸®Å°´Â ¹®ÀÚ°¡ ÇÇ¿¬»êÀÚÀÎÁö È®ÀÎ
+			charCat(exp); // ÇÇ¿¬»êÀÚÀÎ °æ¿ì postfixExp¿¡ Ãß°¡
+		}
+		else if(getToken(*exp) == lparen) { // exp°¡ °¡¸®Å°´Â ¹®ÀÚ°¡ '('ÀÎÁö È®ÀÎ
+			postfixPush(*exp); // '('ÀÌ¸é postfixStack¿¡ push
+			
+			exp++; // '(' Áßº¹À» ¹æÁöÇÏ±â À§ÇØ exp++ ¼öÇà		
+			
+			while(getToken(*exp) != rparen) { // exp°¡ °¡¸®Å°´Â ¹®ÀÚ°¡ ')'ÀÏ ¶§±îÁö ¹İº¹
+				if(getToken(*exp) == operand) { 
+					charCat(exp);	// exp°¡ °¡¸®Å°´Â ¹®ÀÚ°¡ ÇÇ¿¬»êÀÚÀÌ¸é postfixExp¿¡ Ãß°¡
+				} else { // ÇÇ¿¬»êÀÚ°¡ ¾Æ´Ñ °æ¿ì
+					if(getPriority(*exp) <= getPriority(postfixStack[postfixStackTop])) { // exp°¡ °¡¸®Å°´Â ¿¬»êÀÚ°¡ postfixStackTopÀÌ °¡¸®Å°´Â ¿¬»êÀÚº¸´Ù ¿ì¼±¼øÀ§°¡ ³·°Å³ª °°Àº °æ¿ì
+						x = postfixPop(); // postfixStackTopÀÌ °¡¸®Å°´Â ¿¬»êÀÚ¸¦ popÇÏ¿© x¿¡ ÀúÀå
+						charCat(&x); // x¸¦ postfixExp¿¡ Ãß°¡
+						postfixPush(*exp); // exp°¡ °¡¸®Å°´Â ¿¬»êÀÚ¸¦ postfixStack¿¡ push
+					} else {
+						postfixPush(*exp); // exp°¡ °¡¸®Å°´Â ¿¬»êÀÚ°¡ postfixStackTopÀÌ °¡¸®Å°´Â ¿¬»êÀÚº¸´Ù ¿ì¼±¼øÀ§°¡ ³ôÀº °æ¿ì postfixStack¿¡ push
+					}
+				}
+				exp++;
+			}
 
+			while(postfixStack[postfixStackTop] != '(')
+			{
+				x = postfixPop(); // postfixStackTopÀÌ °¡¸®Å°´Â ¿¬»êÀÚ¸¦ popÇÏ¿© x¿¡ ÀúÀå
+				charCat(&x); // x¸¦ postfixExp¿¡ Ãß°¡
+			}
+
+			x = postfixPop(); // '('¸¦ postfixStack¿¡¼­ pop
+		}
+		else { // exp°¡ °¡¸®Å°´Â ¹®ÀÚ°¡ ÇÇ¿¬»êÀÚµµ ¾Æ´Ï°í, '('µµ ¾Æ´Ñ °æ¿ì
+			if(getPriority(*exp) <= getPriority(postfixStack[postfixStackTop])) { // exp°¡ °¡¸®Å°´Â ¿¬»êÀÚ°¡ postfixStackTopÀÌ °¡¸®Å°´Â ¿¬»êÀÚº¸´Ù ¿ì¼±¼øÀ§°¡ ³·°Å³ª °°Àº °æ¿ì
+				x = postfixPop(); // postfixStackTopÀÌ °¡¸®Å°´Â ¿¬»êÀÚ¸¦ popÇÏ¿© x¿¡ ÀúÀå
+				charCat(&x); // x¸¦ postfixExp¿¡ Ãß°¡
+				postfixPush(*exp); // exp°¡ °¡¸®Å°´Â ¿¬»êÀÚ¸¦ postfixStack¿¡ push
+			} else {
+				postfixPush(*exp);
+			}
+		}
+		exp++;
 	}
 
-	/* í•„ìš”í•œ ë¡œì§ ì™„ì„± */
+	/* ÇÊ¿äÇÑ ·ÎÁ÷ ¿Ï¼º */
+	while (postfixStackTop != -1)
+	{
+		x = postfixPop(); // postfixStackTopÀÌ °¡¸®Å°´Â ¿¬»êÀÚ¸¦ popÇÏ¿© x¿¡ ÀúÀå
+		charCat(&x); // x¸¦ postfixExp¿¡ Ãß°¡
+	}
 
 }
+
 void debug()
 {
 	printf("\n---DEBUG\n");
-	printf("infixExp =  %s\n", infixExp);
-	printf("postExp =  %s\n", postfixExp);
-	printf("eval result = %d\n", evalResult);
+	printf("infixExp =  %s\n", infixExp); // infixExp¿¡ µé¾îÀÖ´Â ¹®ÀÚ¿­ Ãâ·Â
+	printf("postExp =  %s\n", postfixExp); // postfixExp¿¡ µé¾îÀÖ´Â ¹®ÀÚ¿­ Ãâ·Â
+	printf("eval result = %d\n", evalResult); // evaluation ¿¬»ê ¼öÇà °á°ú Ãâ·Â
 
 	printf("postfixStack : ");
 	for(int i = 0; i < MAX_STACK_SIZE; i++)
-		printf("%c  ", postfixStack[i]);
+		printf("%c  ", postfixStack[i]); // postfixStackÀ» ¼øÈ¸ÇÏ¸ç °¢ ¿ä¼Ò¸¦ Ãâ·Â
 
 	printf("\n");
 
@@ -193,19 +258,52 @@ void debug()
 
 void reset()
 {
-	infixExp[0] = '\0';
-	postfixExp[0] = '\0';
+	infixExp[0] = '\0'; // infixExpÀÇ Ã¹¹øÂ° ¿ä¼Ò¸¦ '\0'À¸·Î ÃÊ±âÈ­
+	postfixExp[0] = '\0'; // postfixExpÀÇ Ã¹¹øÂ° ¿ä¼Ò¸¦ '\0'À¸·Î ÃÊ±âÈ­
 
 	for(int i = 0; i < MAX_STACK_SIZE; i++)
-		postfixStack[i] = '\0';
+		postfixStack[i] = '\0'; // postfixStackÀ» ¼øÈ¸ÇÏ¸ç °¢ ¿ä¼Ò¸¦ '\0'À¸·Î ÃÊ±âÈ­
          
-	postfixStackTop = -1;
-	evalStackTop = -1;
-	evalResult = 0;
+	postfixStackTop = -1; // postfixStackTopÀ» -1·Î ÃÊ±âÈ­
+	evalStackTop = -1; // evalStackTopÀ» -1·Î ÃÊ±âÈ­
+	evalResult = 0; // evalResultÀ» 0À¸·Î ÃÊ±âÈ­
 }
 
+/**
+ * postfix·Î º¯È¯µÈ ½ÄÀ» ¿¬»ê
+*/
 void evaluation()
 {
-	/* postfixExp, evalStackì„ ì´ìš©í•œ ê³„ì‚° */
+	/* postfixExp, evalStackÀ» ÀÌ¿ëÇÑ °è»ê */
+	char *exp = postfixExp;
+
+	while (*exp != '\0') { // ¹®ÀÚ¿­ÀÇ ³¡('\0')ÀÌ ³ª¿Ã ‹š±îÁö ¹İº¹
+		if (getToken(*exp) == operand) { // exp°¡ °¡¸®Å°´Â ¿ä¼Ò°¡ operandÀÎÁö È®ÀÎ
+			evalPush(*exp - '0'); // operandÀÌ¸é char¸¦ int·Î º¯È¯ÇÏ¿© evalStack¿¡ push
+		}	else {
+			int operand2 = evalPop(); // operand°¡ ¾Æ´Ï¸é evalStack¿¡¼­ ¿ä¼Ò¸¦ ÇÏ³ª ²¨³»¼­ operand1¿¡ ÀúÀå
+			int operand1 = evalPop(); // operand°¡ ¾Æ´Ï¸é evalStack¿¡¼­ ¿ä¼Ò¸¦ ÇÏ³ª ²¨³»¼­ operand2¿¡ ÀúÀå
+			switch (*exp) {
+				case '+':
+					evalPush(operand1 + operand2); // exp°¡ °¡¸®Å°´Â ¿ä¼Ò°¡ +ÀÌ¸é µÎ operand¸¦ ´õÇØ¼­ evalStack¿¡ push
+					break;
+				case '-':
+					evalPush(operand1 - operand2); // exp°¡ °¡¸®Å°´Â ¿ä¼Ò°¡ -ÀÌ¸é µÎ operand¸¦ »©¼­ evalStack¿¡ push
+					break;
+				case '*':
+					evalPush(operand1 * operand2); // exp°¡ °¡¸®Å°´Â ¿ä¼Ò°¡ *ÀÌ¸é µÎ operand¸¦ °öÇØ¼­ evalStack¿¡ push
+					break;
+				case '/':
+					if(operand2 == 0) {
+						printf("0À¸·Î ³ª´­ ¼ö ¾ø½À´Ï´Ù.");
+						exit(1);
+					}
+					evalPush(operand1 / operand2); // exp°¡ °¡¸®Å°´Â ¿ä¼Ò°¡ /ÀÌ¸é µÎ operand¸¦ ³ª´²¼­ evalStack¿¡ push
+					break;
+			}
+		}
+		exp++;
+	}
+	evalResult = evalPop(); // evalStackÀÇ °¡Àå ¸¶Áö¸· ¿ä¼Ò¸¦ popÇÏ¿© evalResult¿¡ ÀúÀå
 }
 

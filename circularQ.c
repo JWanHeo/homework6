@@ -46,25 +46,25 @@ int main(void)
 		scanf(" %c", &command);
 
 		switch(command) {
-		case 'i': case 'I':
-			data = getElement();
-			enQueue(cQ, data);
-			break;
-		case 'd': case 'D':
-			deQueue(cQ, &data);
-			break;
-		case 'p': case 'P':
-			printQ(cQ);
-			break;
-		case 'b': case 'B':
-			debugQ(cQ);
-			break;
-		case 'q': case 'Q':
-   	        freeQueue(cQ);
-			break;
-		default:
-			printf("\n       >>>>>   Concentration!!   <<<<<     \n");
-			break;
+			case 'i': case 'I':
+				data = getElement();
+				enQueue(cQ, data);
+				break;
+			case 'd': case 'D':
+				deQueue(cQ, &data);
+				break;
+			case 'p': case 'P':
+				printQ(cQ);
+				break;
+			case 'b': case 'B':
+				debugQ(cQ);
+				break;
+			case 'q': case 'Q':
+				freeQueue(cQ);
+				break;
+			default:
+				printf("\n       >>>>>   Concentration!!   <<<<<     \n");
+				break;
 		}
 
 	}while(command != 'q' && command != 'Q');
@@ -76,7 +76,7 @@ int main(void)
 QueueType *createQueue() // 반환형이 QueueType 포인터인 createQueue 함수 정의
 {
 	QueueType *cQ; // QueueType 포인터 cQ 선언
-	cQ = (QueueType *)malloc(sizeof(QueueType)); // cQ에 QueueType의 사이즈(16byte)만큼의 메모리를 동적 할당
+	cQ = (QueueType *)malloc(sizeof(QueueType)); // cQ에 QueueType의 사이즈(12byte)만큼의 메모리를 동적 할당
 	cQ->front = 0; // cQ의 front 값을 0으로 초기화
 	cQ->rear = 0; // cQ의 rear 값을 0으로 초기화
 	return cQ; // cQ 반환
@@ -109,13 +109,13 @@ int isEmpty(QueueType *cQ) // 반환형이 int이고, QueueType 포인터 cQ를 매개변수로
 /* complete the function */
 int isFull(QueueType *cQ) // 반환형이 int이고, QueueType 포인터 cQ를 매개변수로 받는 isFull함수 정의
 {
-	int nextRear;
-	if(cQ->rear == MAX_QUEUE_SIZE - 1) {
-		nextRear = 0;
+	int nextRear; // 다음 rear를 가리키는 변수 선언
+	if(cQ->rear == MAX_QUEUE_SIZE - 1) { // rear가 마지막 인덱스이면
+		nextRear = 0; // nextRear를 0으로 초기화
 	} else {
-		nextRear = cQ->rear + 1;
+		nextRear = cQ->rear + 1; // rear가 마지막 인덱스가 아니면 + 1
 	}
-	if(nextRear == cQ->front) return 0; // cQ의 front와 rear의 차가 1이면 0 반환
+	if(nextRear == cQ->front) return 0; // cQ의 front와 nextRear가 일치하면 0 반환
 
 	return 1; // 아니면 1 반환
 }
